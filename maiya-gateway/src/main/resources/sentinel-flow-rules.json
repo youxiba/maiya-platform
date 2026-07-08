@@ -1,0 +1,42 @@
+[
+    {
+        "resource": "/api/user/**",
+        "count": 500,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0
+    },
+    {
+        "resource": "/api/goods/**",
+        "count": 1000,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0
+    },
+    {
+        "resource": "/api/order/**",
+        "count": 300,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0
+    },
+    {
+        "resource": "/api/payment/**",
+        "count": 200,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0
+    },
+    {
+        "resource": "/api/auth/**",
+        "count": 100,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0
+    }
+]

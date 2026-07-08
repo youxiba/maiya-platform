@@ -1,0 +1,44 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: maiya-user-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_user?useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
+    username: maiya_user
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      validation-query: SELECT 1
+  data:
+    redis:
+      host: hadoop003
+      port: 6379
+      password: ${DB_PASSWORD:}
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.userservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+logging:
+  level:
+    ny.shop.youxuan.userservice: DEBUG

@@ -1,0 +1,51 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: maiya-delivery-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_delivery?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: maiya_delivery
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      validation-query: SELECT 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+      config:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+        file-extension: yml
+
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.deliveryservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+logging:
+  level:
+    ny.shop.youxuan.deliveryservice: DEBUG
+  file:
+    path: /data/logs/${spring.application.name}
+    name: ${logging.file.path}/delivery-service.log
+
+# ========== RocketMQ ==========
+rocketmq:
+  name-server: hadoop001:9876,hadoop002:9876
+  producer:
+    group: ${spring.application.name}-producer
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3

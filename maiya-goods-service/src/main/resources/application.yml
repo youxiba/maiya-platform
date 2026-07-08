@@ -1,0 +1,23 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: maiya-goods-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_goods?useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
+    username: maiya_goods
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.goodsservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    ny.shop.youxuan.goodsservice: DEBUG

@@ -1,0 +1,40 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: maiya-merchant-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_merchant?useUnicode=true&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: maiya_merchant
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      validation-query: SELECT 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+      config:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+        file-extension: yml
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.maiyamerchantservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+logging:
+  level:
+    ny.shop.youxuan.maiyamerchantservice: DEBUG
+  file:
+    path: /data/logs/${spring.application.name}
+    name: ${logging.file.path}/maiya-merchant-service.log

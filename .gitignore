@@ -1,0 +1,17 @@
+target/
+*.class
+*.jar
+*.war
+*.log
+.vscode/
+.idea/
+*.iml
+node_modules/
+*.p12
+*.pfx
+*.jks
+application-dev.yml
+application-local.yml
+.env
+.DS_Store
+Thumbs.db

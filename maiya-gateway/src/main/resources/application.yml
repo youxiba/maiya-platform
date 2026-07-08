@@ -1,0 +1,160 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: maiya-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    # ========== Nacos 注册中心 ==========
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+      config:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+        file-extension: yml
+
+    # ========== Gateway 路由配置 ==========
+    gateway:
+      routes:
+        # User Service - 认证（公开接口）
+        - id: user-auth
+          uri: lb://maiya-user-service
+          predicates:
+            - Path=/api/auth/**
+        # User Service - 用户信息（需Token）
+        - id: user-service
+          uri: lb://maiya-user-service
+          predicates:
+            - Path=/api/user/**
+
+        # Merchant Service
+        - id: merchant-service
+          uri: lb://maiya-merchant-service
+          predicates:
+            - Path=/api/merchant/**
+
+        # Goods Service - 公开商品浏览
+        - id: goods-public
+          uri: lb://maiya-goods-service
+          predicates:
+            - Path=/api/goods/**,/api/category/**
+        # Goods Service - 购物车
+        - id: cart-service
+          uri: lb://maiya-goods-service
+          predicates:
+            - Path=/api/cart/**
+
+        # Order Service
+        - id: order-service
+          uri: lb://maiya-order-service
+          predicates:
+            - Path=/api/order/**
+
+        # Payment Service - 公开回调接口
+        - id: payment-notify
+          uri: lb://maiya-payment-service
+          predicates:
+            - Path=/api/payment/notify/**
+        # Payment Service - 需Token
+        - id: payment-service
+          uri: lb://maiya-payment-service
+          predicates:
+            - Path=/api/payment/**
+
+        # Finance / Wallet / Account
+        - id: finance-service
+          uri: lb://maiya-finance-service
+          predicates:
+            - Path=/api/finance/**,/api/wallet/**,/api/account/**
+
+        # Delivery / Rider
+        - id: delivery-service
+          uri: lb://maiya-delivery-service
+          predicates:
+            - Path=/api/delivery/**,/api/rider/**
+
+        # Marketing / Coupon / Activity
+        - id: marketing-service
+          uri: lb://maiya-marketing-service
+          predicates:
+            - Path=/api/marketing/**,/api/coupon/**,/api/activity/**
+
+        # Notification / Message
+        - id: notification-service
+          uri: lb://maiya-notification-service
+          predicates:
+            - Path=/api/notify/**,/api/message/**
+        # Notification - 公开打印回调
+        - id: notification-public
+          uri: lb://maiya-notification-service
+          predicates:
+            - Path=/api/notify/public/**
+
+        # After-sale
+        - id: after-sale-service
+          uri: lb://maiya-order-service
+          predicates:
+            - Path=/api/after-sale/**
+
+      # 全局 CORS
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+    # ========== Sentinel 限流熔断 ==========
+    sentinel:
+      scg:
+        fallback:
+          mode: response
+          response-status: 429
+          response-body: '{"code":429,"message":"请求过于频繁，请稍后重试"}'
+      datasource:
+        flow:
+          nacos:
+            server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+            namespace: maiya
+            data-id: ${spring.application.name}-flow-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+        degrade:
+          nacos:
+            server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+            namespace: maiya
+            data-id: ${spring.application.name}-degrade-rules
+            groupId: SENTINEL_GROUP
+            data-type: json
+            rule-type: degrade
+
+# ========== 日志配置 ==========
+logging:
+  level:
+    root: INFO
+    ny.shop.youxuan.gateway: INFO
+    org.springframework.cloud.gateway: INFO
+  file:
+    path: /data/logs/${spring.application.name}
+    name: ${logging.file.path}/gateway.log
+
+# ========== 管理端点 ==========
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}

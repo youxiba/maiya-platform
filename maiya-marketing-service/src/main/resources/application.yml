@@ -1,0 +1,60 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: maiya-marketing-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_marketing?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: maiya_marketing
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      test-while-idle: true
+      validation-query: SELECT 1
+  data:
+    redis:
+      host: hadoop003
+      port: 6379
+      password: ${DB_PASSWORD:}
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 4
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+      config:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+        file-extension: yml
+
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.marketingservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+rocketmq:
+  name-server: hadoop001:9876,hadoop002:9876
+  producer:
+    group: maiya-marketing-producer
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3
+
+logging:
+  level:
+    ny.shop.youxuan.marketingservice: DEBUG
+  file:
+    path: /data/logs/${spring.application.name}
+    name: ${logging.file.path}/marketing-service.log

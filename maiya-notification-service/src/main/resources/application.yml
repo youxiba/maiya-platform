@@ -1,0 +1,34 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: maiya-notification-service
+  datasource:
+    url: jdbc:mysql://hadoop003:3306/maiya_notification?useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
+    username: maiya_notification
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop001:8848,hadoop002:8848,hadoop003:8848
+        namespace: maiya
+        group: MAIYA_GROUP
+mybatis-plus:
+  type-aliases-package: ny.shop.youxuan.notificationservice.entity
+  configuration:
+    map-underscore-to-camel-case: true
+yly:
+  client-id: ${YLY_CLIENT_ID}
+  client-secret: ${YLY_CLIENT_SECRET}
+logging:
+  level:
+    ny.shop.youxuan.notificationservice: DEBUG
+
+# ========== RocketMQ ==========
+rocketmq:
+  name-server: hadoop001:9876,hadoop002:9876
+  producer:
+    group: ${spring.application.name}-producer
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 3
