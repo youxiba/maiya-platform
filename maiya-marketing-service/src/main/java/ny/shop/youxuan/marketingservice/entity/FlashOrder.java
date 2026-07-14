@@ -7,15 +7,17 @@ import java.math.BigDecimal;
 @TableName("flash_order")
 public class FlashOrder {
     private Long id;
+    private String requestId;
     private String orderId;
     private String fsId;
     private String uid;
     private String goodsInfoId;
     private BigDecimal flashPrice;
     private Integer qty;
-    private Integer orderStatus; // 0=待支付 1=已支付 2=已取消
+    private Integer orderStatus; // 0=待支付 1=已支付 2=已取消 3=已退款
     private Long createTime;
     private Long payTime;
+    private Integer version;
 
     public Long getId() {
         return id;
@@ -95,5 +97,21 @@ public class FlashOrder {
 
     public void setPayTime(Long v) {
         this.payTime = v;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String v) {
+        this.requestId = v;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer v) {
+        this.version = v;
     }
 }

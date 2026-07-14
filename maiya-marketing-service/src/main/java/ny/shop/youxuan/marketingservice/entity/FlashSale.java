@@ -10,12 +10,17 @@ public class FlashSale {
     private String fsDesc;
     private Integer fsMchs;
     private Integer mchs;
-    private Integer fsQty;
+    private Integer fsQty;      // 总库存
+    private Integer totalStock; // 总库存（new）
+    private Integer soldStock;  // 已售数量
+    private Integer limitQty;   // 限购数量
+    private Integer version;    // 乐观锁
     private Long startDate;
     private Long endDate;
     private Long startTime;
     private Long endTime;
     private Boolean enable;
+    private java.math.BigDecimal flashPrice;
 
     public Integer getId() {
         return id;
@@ -111,5 +116,45 @@ public class FlashSale {
 
     public void setEnable(Boolean v) {
         this.enable = v;
+    }
+
+    public Integer getTotalStock() {
+        return totalStock != null ? totalStock : fsQty;
+    }
+
+    public void setTotalStock(Integer v) {
+        this.totalStock = v;
+    }
+
+    public Integer getSoldStock() {
+        return soldStock;
+    }
+
+    public void setSoldStock(Integer v) {
+        this.soldStock = v;
+    }
+
+    public Integer getLimitQty() {
+        return limitQty != null ? limitQty : 1;
+    }
+
+    public void setLimitQty(Integer v) {
+        this.limitQty = v;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer v) {
+        this.version = v;
+    }
+
+    public java.math.BigDecimal getFlashPrice() {
+        return flashPrice;
+    }
+
+    public void setFlashPrice(java.math.BigDecimal v) {
+        this.flashPrice = v;
     }
 }

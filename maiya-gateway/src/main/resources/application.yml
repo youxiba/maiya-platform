@@ -136,7 +136,10 @@ spring:
             data-type: json
             rule-type: degrade
 
-# ========== 日志配置 ==========
+# ========== JWT 配置 ==========
+jwt:
+  secret: ${JWT_SECRET:ZGV2X3NlY3JldF9rZXlfZm9yX21haXlhX3BsYXRmb3JtXzIwMjQ=}
+  issuer: maiya-auth
 logging:
   level:
     root: INFO
