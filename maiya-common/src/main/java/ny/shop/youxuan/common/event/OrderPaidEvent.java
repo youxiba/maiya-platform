@@ -10,6 +10,7 @@ public class OrderPaidEvent implements Serializable {
     private String uid;
     private String mid;
     private String payType;
+    private String transactionId;
     private BigDecimal ahsrSum;
     private Long payTime;
 
@@ -51,6 +52,14 @@ public class OrderPaidEvent implements Serializable {
 
     public void setPayType(String v) {
         this.payType = v;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String v) {
+        this.transactionId = v;
     }
 
     public BigDecimal getAhsrSum() {

@@ -102,6 +102,62 @@ spring:
           predicates:
             - Path=/api/after-sale/**
 
+        # ========== Swagger API Docs（按服务前缀路由）=========
+        - id: swagger-user
+          uri: lb://maiya-user-service
+          predicates:
+            - Path=/user/v3/api-docs
+          filters:
+            - RewritePath=/user/v3/api-docs, /v3/api-docs
+        - id: swagger-merchant
+          uri: lb://maiya-merchant-service
+          predicates:
+            - Path=/merchant/v3/api-docs
+          filters:
+            - RewritePath=/merchant/v3/api-docs, /v3/api-docs
+        - id: swagger-goods
+          uri: lb://maiya-goods-service
+          predicates:
+            - Path=/goods/v3/api-docs
+          filters:
+            - RewritePath=/goods/v3/api-docs, /v3/api-docs
+        - id: swagger-order
+          uri: lb://maiya-order-service
+          predicates:
+            - Path=/order/v3/api-docs
+          filters:
+            - RewritePath=/order/v3/api-docs, /v3/api-docs
+        - id: swagger-payment
+          uri: lb://maiya-payment-service
+          predicates:
+            - Path=/payment/v3/api-docs
+          filters:
+            - RewritePath=/payment/v3/api-docs, /v3/api-docs
+        - id: swagger-finance
+          uri: lb://maiya-finance-service
+          predicates:
+            - Path=/finance/v3/api-docs
+          filters:
+            - RewritePath=/finance/v3/api-docs, /v3/api-docs
+        - id: swagger-delivery
+          uri: lb://maiya-delivery-service
+          predicates:
+            - Path=/delivery/v3/api-docs
+          filters:
+            - RewritePath=/delivery/v3/api-docs, /v3/api-docs
+        - id: swagger-marketing
+          uri: lb://maiya-marketing-service
+          predicates:
+            - Path=/marketing/v3/api-docs
+          filters:
+            - RewritePath=/marketing/v3/api-docs, /v3/api-docs
+        - id: swagger-notification
+          uri: lb://maiya-notification-service
+          predicates:
+            - Path=/notification/v3/api-docs
+          filters:
+            - RewritePath=/notification/v3/api-docs, /v3/api-docs
+
       # 全局 CORS
       globalcors:
         cors-configurations:

@@ -35,7 +35,7 @@ public class FlashSentinelRuleConfig {
                 .setIntervalSec(1)
                 .setBurst(1000)
                 .setParamItem(new com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayParamFlowItem()
-                        .setParseStrategy(SentinelGatewayConstants.PARAM_PARSE_STRATEGY_URL));
+                        .setParseStrategy(SentinelGatewayConstants.PARAM_PARSE_STRATEGY_URL_PARAM));
         rules.add(grabRule);
 
         // 规则2: 活动信息查询 — QPS 1000

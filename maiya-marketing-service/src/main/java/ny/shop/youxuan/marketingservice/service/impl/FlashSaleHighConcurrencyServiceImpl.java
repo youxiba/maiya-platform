@@ -76,7 +76,7 @@ public class FlashSaleHighConcurrencyServiceImpl implements FlashSaleHighConcurr
             return false;
         }
 
-        long ttl = (sale.getEndTime().getTime() - System.currentTimeMillis()) / 1000;
+        long ttl = (sale.getEndTime() - System.currentTimeMillis()) / 1000;
         if (ttl <= 0) {
             log.warn("活动已结束: fsId={}", fsId);
             return false;
@@ -87,11 +87,11 @@ public class FlashSaleHighConcurrencyServiceImpl implements FlashSaleHighConcurr
             connection.multi();
             connection.stringCommands().set((KEY_ACTIVE + fsId).getBytes(),
                     "1".getBytes(),
-                    org.springframework.data.redis.core.Expiration.seconds(ttl),
+                    org.springframework.data.redis.core.types.Expiration.seconds(ttl),
                     org.springframework.data.redis.connection.RedisStringCommands.SetOption.UPSERT);
             connection.stringCommands().set((KEY_STOCK + fsId).getBytes(),
                     String.valueOf(sale.getTotalStock()).getBytes(),
-                    org.springframework.data.redis.core.Expiration.seconds(ttl),
+                    org.springframework.data.redis.core.types.Expiration.seconds(ttl),
                     org.springframework.data.redis.connection.RedisStringCommands.SetOption.UPSERT);
             // 清理预热前的残留数据
             connection.keyCommands().del((KEY_USERS + fsId).getBytes());
@@ -137,7 +137,7 @@ public class FlashSaleHighConcurrencyServiceImpl implements FlashSaleHighConcurr
 
         // ---- 3. 执行 Lua 原子扣库存 ----
         long ttl = Math.max(60,
-                (sale.getEndTime().getTime() - System.currentTimeMillis()) / 1000);
+                (sale.getEndTime() - System.currentTimeMillis()) / 1000);
 
         List<String> keys = Arrays.asList(
                 KEY_ACTIVE + fsId,     // KEYS[1]

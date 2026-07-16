@@ -2,7 +2,6 @@ package ny.shop.youxuan.marketingservice.dto;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
-import lombok.Accessors;
 import lombok.experimental.Accessors;
 
 /**

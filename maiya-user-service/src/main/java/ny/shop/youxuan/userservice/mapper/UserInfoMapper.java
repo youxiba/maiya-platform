@@ -25,6 +25,9 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     @Select("SELECT * FROM user_info WHERE apple_id=#{a} LIMIT 1")
     UserInfo findByAppleId(@Param("a") String a);
 
+    @Select("SELECT * FROM user_info WHERE username=#{u} LIMIT 1")
+    UserInfo findByUsername(@Param("u") String username);
+
     @Select("SELECT super_uid FROM user_info WHERE uid=#{u} LIMIT 1")
     String getSuperUid(@Param("u") String u);
 }

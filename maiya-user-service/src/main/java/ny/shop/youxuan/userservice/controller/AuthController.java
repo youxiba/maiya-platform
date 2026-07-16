@@ -28,6 +28,11 @@ public class AuthController {
         return ApiResult.success(authService.register(telephone, inviteCode));
     }
 
+    @PostMapping("/login-by-pwd")
+    public ApiResult<JSONObject> loginByPwd(@RequestParam String username, @RequestParam String password) {
+        return ApiResult.success(authService.loginByPassword(username, password));
+    }
+
     @PostMapping("/third-login")
     public ApiResult<JSONObject> thirdLogin(@RequestParam String thirdType, @RequestParam String unionId,
             @RequestParam(required = false) String inviteCode) {

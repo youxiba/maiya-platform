@@ -46,7 +46,7 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
             "/api/auth/**", "/api/goods/public/**",
             "/api/payment/notify/**", "/api/notify/public/**",
             "/actuator/**", "/swagger-ui/**", "/v3/api-docs/**",
-            "/favicon.ico"
+            "/*/v3/api-docs", "/favicon.ico"
     };
 
     /** 需剥离的客户端伪冒 Header */

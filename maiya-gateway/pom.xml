@@ -48,6 +48,13 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Maiya Common -->
+        <dependency>
+            <groupId>ny.shop</groupId>
+            <artifactId>maiya-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Spring Cloud Gateway (核心，注意不能与 spring-boot-starter-web 共存) -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -78,6 +85,19 @@
             <artifactId>sentinel-datasource-nacos</artifactId>
         </dependency>
 
+        <!-- Sentinel 网关通用适配器 -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-api-gateway-adapter-common</artifactId>
+            <version>1.8.8</version>
+        </dependency>
+        <!-- Sentinel Spring Cloud Gateway 适配器 -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
+            <version>1.8.8</version>
+        </dependency>
+
         <!-- 负载均衡 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -101,6 +121,12 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.12.6</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <!-- Fastjson -->

@@ -9,6 +9,8 @@ public interface AuthService {
 
     JSONObject register(String telephone, String inviteCode);
 
+    JSONObject loginByPassword(String username, String password);
+
     JSONObject thirdPartyLogin(String thirdType, String unionId, String inviteCode);
 
     String generateToken(String uid);

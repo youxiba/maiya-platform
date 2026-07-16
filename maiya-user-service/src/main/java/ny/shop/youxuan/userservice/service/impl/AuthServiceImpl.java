@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ny.shop.youxuan.common.exception.BizException;
+import ny.shop.youxuan.common.util.MD5Utils;
 import ny.shop.youxuan.userservice.entity.UserInfo;
 import ny.shop.youxuan.userservice.mapper.UserInfoMapper;
 import ny.shop.youxuan.userservice.service.AuthService;
@@ -74,6 +75,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public JSONObject loginByPassword(String username, String password) {
+        UserInfo user = userMapper.findByUsername(username);
+        if (user == null)
+            throw new BizException(2002, "用户名或密码错误");
+        String encrypted = MD5Utils.encode(password);
+        if (!encrypted.equalsIgnoreCase(user.getPassword()))
+            throw new BizException(2004, "用户名或密码错误");
+        return buildResult(user);
+    }
+
+    @Override
     @Transactional
     public JSONObject thirdPartyLogin(String thirdType, String unionId, String inviteCode) {
         UserInfo u = null;
@@ -114,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String generateToken(String uid) {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().subject(uid).issuedAt(new Date())
+        return Jwts.builder().subject(uid).issuer("maiya-auth").issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExp)).signWith(key).compact();
     }
 

@@ -370,7 +370,6 @@ CREATE TABLE order_info (
     goods_score DOUBLE DEFAULT 5.0,
     sco_sum INT DEFAULT 0,
     goodsco_sum INT DEFAULT 0,
-    group_id VARCHAR(64) DEFAULT '',
     group_sum INT DEFAULT 0,
     group_lim INT DEFAULT 0,
     KEY idx_order_id (order_id),
