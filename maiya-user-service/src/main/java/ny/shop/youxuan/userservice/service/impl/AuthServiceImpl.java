@@ -6,13 +6,16 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ny.shop.youxuan.common.dto.UserPermissionDTO;
 import ny.shop.youxuan.common.exception.BizException;
-import ny.shop.youxuan.common.util.MD5Utils;
 import ny.shop.youxuan.userservice.entity.UserInfo;
 import ny.shop.youxuan.userservice.mapper.UserInfoMapper;
 import ny.shop.youxuan.userservice.service.AuthService;
+import ny.shop.youxuan.userservice.service.PermissionService;
+import ny.shop.youxuan.userservice.vo.LoginVO;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -25,6 +28,9 @@ public class AuthServiceImpl implements AuthService {
     private StringRedisTemplate redis;
     @Autowired
     private UserInfoMapper userMapper;
+    @Autowired
+    private PermissionService permissionService;
+
     @Value("${jwt.secret}")
     private String jwtSecret;
     @Value("${jwt.expiration:86400000}")
@@ -75,14 +81,28 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JSONObject loginByPassword(String username, String password) {
+    public LoginVO loginByPassword(String username, String password) {
+        // 1. 查询用户
         UserInfo user = userMapper.findByUsername(username);
-        if (user == null)
+        // 统一提示，防止用户名枚举攻击
+        if (user == null) {
             throw new BizException(2002, "用户名或密码错误");
-        String encrypted = MD5Utils.encode(password);
-        if (!encrypted.equalsIgnoreCase(user.getPassword()))
+        }
+
+        // 2. 校验密码（BCrypt + 站点盐值）
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(password + "mkb", user.getPassword())) {
             throw new BizException(2004, "用户名或密码错误");
-        return buildResult(user);
+        }
+
+        // 3. 生成 JWT Token
+        String token = generateToken(user.getUid());
+
+        // 4. 预缓存权限到 Redis
+        permissionService.refreshUserPermissions(user.getUid());
+
+        // 5. 组装安全返回结果（不含密码等敏感字段）
+        return buildLoginVO(user, token);
     }
 
     @Override
@@ -140,7 +160,31 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * 构建安全登录响应（LoginVO），不含密码等敏感字段
+     */
+    private LoginVO buildLoginVO(UserInfo user, String token) {
+        LoginVO vo = new LoginVO();
+        vo.setToken("Bearer " + token);
+        vo.setUid(user.getUid());
+        vo.setUsername(user.getUsername());
+        vo.setNickname(user.getNickname());
+        vo.setAvatar(user.getAvatar());
+
+        // 从缓存/DB 加载角色和权限列表
+        UserPermissionDTO perm = permissionService.getUserPermissions(user.getUid());
+        vo.setRoles(perm.getRoles());
+        vo.setPermissions(perm.getPermissions());
+        return vo;
+    }
+
+    /**
+     * 构建旧版 JSON 响应（兼容手机号/注册/三方登录，后续逐步迁移至 LoginVO）
+     */
     private JSONObject buildResult(UserInfo u) {
+        // 登录成功 → 预缓存用户权限
+        permissionService.refreshUserPermissions(u.getUid());
+
         JSONObject r = new JSONObject();
         r.put("uid", u.getUid());
         r.put("username", u.getUsername());

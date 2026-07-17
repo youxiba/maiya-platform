@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ny.shop.youxuan.common.result.ApiResult;
 import ny.shop.youxuan.userservice.service.AuthService;
+import ny.shop.youxuan.userservice.vo.LoginVO;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login-by-pwd")
-    public ApiResult<JSONObject> loginByPwd(@RequestParam String username, @RequestParam String password) {
+    public ApiResult<LoginVO> loginByPwd(@RequestParam String username, @RequestParam String password) {
         return ApiResult.success(authService.loginByPassword(username, password));
     }
 

@@ -32,6 +32,11 @@ spring:
           uri: lb://maiya-user-service
           predicates:
             - Path=/api/user/**
+        # User Service - 管理后台（需Token）
+        - id: user-admin
+          uri: lb://maiya-user-service
+          predicates:
+            - Path=/api/admin/**
 
         # Merchant Service
         - id: merchant-service
@@ -158,14 +163,7 @@ spring:
           filters:
             - RewritePath=/notification/v3/api-docs, /v3/api-docs
 
-      # 全局 CORS
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
+
 
     # ========== Sentinel 限流熔断 ==========
     sentinel:
@@ -194,7 +192,7 @@ spring:
 
 # ========== JWT 配置 ==========
 jwt:
-  secret: ${JWT_SECRET:ZGV2X3NlY3JldF9rZXlfZm9yX21haXlhX3BsYXRmb3JtXzIwMjQ=}
+  secret: ${JWT_SECRET:64223d14b93617261cc17718dd672076f7415c7dbef905d3c31b1b93d326f87cdba8011673f342e75a1978cae73c9d6d2268e81e18ac90e217063532d890c273}
   issuer: maiya-auth
 logging:
   level:

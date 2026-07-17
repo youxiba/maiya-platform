@@ -13,6 +13,16 @@
 
     <modules>
         <module>maiya-common</module>
+        <module>maiya-gateway</module>
+        <module>maiya-user-service</module>
+        <module>maiya-merchant-service</module>
+        <module>maiya-goods-service</module>
+        <module>maiya-order-service</module>
+        <module>maiya-payment-service</module>
+        <module>maiya-finance-service</module>
+        <module>maiya-delivery-service</module>
+        <module>maiya-marketing-service</module>
+        <module>maiya-notification-service</module>
     </modules>
 
     <properties>
@@ -30,6 +40,7 @@
         <nacos-client.version>2.4.3</nacos-client.version>
         <sentinel.version>1.8.8</sentinel.version>
         <rocketmq.version>5.3.2</rocketmq.version>
+        <rocketmq-spring-boot-starter.version>2.3.5</rocketmq-spring-boot-starter.version>
         <seata.version>1.8.0</seata.version>
         <redisson.version>3.40.2</redisson.version>
         <fastjson.version>2.0.54</fastjson.version>
@@ -91,6 +102,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql-connector.version}</version>
@@ -129,7 +146,7 @@
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-spring-boot-starter</artifactId>
-                <version>${rocketmq.version}</version>
+                <version>${rocketmq-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
@@ -156,6 +173,14 @@
                     <configuration>
                         <release>21</release>
                         <parameters>true</parameters>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
                     </configuration>
                 </plugin>
             </plugins>
