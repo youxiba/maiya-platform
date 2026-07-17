@@ -1,9 +1,7 @@
 package ny.shop.youxuan.userservice.vo;
 
 import lombok.Data;
-import ny.shop.youxuan.userservice.entity.SysMenu;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,7 +33,4 @@ public class LoginVO {
 
     /** 权限标识列表 */
     private Set<String> permissions;
-
-    /** 菜单树（根据权限过滤后） */
-    private List<SysMenu> menus;
 }

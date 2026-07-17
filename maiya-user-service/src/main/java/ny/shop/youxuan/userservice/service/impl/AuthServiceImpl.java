@@ -11,18 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ny.shop.youxuan.common.dto.UserPermissionDTO;
 import ny.shop.youxuan.common.exception.BizException;
-import ny.shop.youxuan.common.result.ApiResult;
-import ny.shop.youxuan.userservice.entity.SysMenu;
 import ny.shop.youxuan.userservice.entity.UserInfo;
 import ny.shop.youxuan.userservice.mapper.UserInfoMapper;
 import ny.shop.youxuan.userservice.service.AuthService;
 import ny.shop.youxuan.userservice.service.PermissionService;
-import ny.shop.youxuan.userservice.service.SysMenuService;
 import ny.shop.youxuan.userservice.vo.LoginVO;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -34,8 +30,6 @@ public class AuthServiceImpl implements AuthService {
     private UserInfoMapper userMapper;
     @Autowired
     private PermissionService permissionService;
-    @Autowired
-    private SysMenuService sysMenuService;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -181,12 +175,6 @@ public class AuthServiceImpl implements AuthService {
         UserPermissionDTO perm = permissionService.getUserPermissions(user.getUid());
         vo.setRoles(perm.getRoles());
         vo.setPermissions(perm.getPermissions());
-
-        // 获取权限过滤后的菜单树
-        ApiResult<List<SysMenu>> menuResult = sysMenuService.getUserMenus(user.getUid());
-        if (menuResult != null && menuResult.getData() != null) {
-            vo.setMenus(menuResult.getData());
-        }
         return vo;
     }
 
