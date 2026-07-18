@@ -1,9 +1,12 @@
 package ny.shop.youxuan.userservice.controller.console;
 
 import com.alibaba.fastjson.JSONObject;
+
+import ny.shop.youxuan.common.dto.UserPermissionDTO;
 import ny.shop.youxuan.common.result.ApiResult;
 import ny.shop.youxuan.common.result.PageResult;
 import ny.shop.youxuan.userservice.entity.UserInfo;
+import ny.shop.youxuan.userservice.service.PermissionService;
 import ny.shop.youxuan.userservice.service.UserInfoService;
 import ny.shop.youxuan.userservice.vo.AdminUserInfoVO;
 import ny.shop.youxuan.userservice.vo.UserInfoConverter;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +34,9 @@ public class UserInfoController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @GetMapping("/getbyuid")
     public ApiResult<AdminUserInfoVO> getByUid(@RequestParam String uid) {
@@ -58,9 +65,24 @@ public class UserInfoController {
 
     @GetMapping("/getrightsbyuid")
     public ApiResult<JSONObject> getRightsByUid(@RequestParam String uid) {
-        JSONObject r = new JSONObject();
-        r.put("uid", uid);
-        return ApiResult.success(r);
+        JSONObject result = new JSONObject();
+
+        // 1. 用户基本信息
+        UserInfo user = userInfoService.getByUid(uid);
+        if (user != null) {
+            result.put("uid", user.getUid());
+            result.put("time", user.getLastPasswordResetDate());
+        } else {
+            result.put("uid", uid);
+            result.put("time", 0);
+        }
+
+        // 2. 从 PermissionService 获取权限列表（走 Redis 缓存）
+        UserPermissionDTO perm = permissionService.getUserPermissions(uid);
+        // 将 Set<String> 转为 List 返回
+        result.put("rights", new ArrayList<>(perm.getPermissions()));
+
+        return ApiResult.success(result);
     }
 
     @GetMapping("/getallinfopage")

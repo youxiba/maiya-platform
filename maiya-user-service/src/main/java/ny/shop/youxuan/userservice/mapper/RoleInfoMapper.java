@@ -3,8 +3,8 @@ package ny.shop.youxuan.userservice.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 import ny.shop.youxuan.userservice.entity.RoleInfo;
-
 import java.util.List;
+
 
 @Mapper
 public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
@@ -27,4 +27,10 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
     /** 删除用户的指定角色 */
     @Delete("DELETE FROM user_role WHERE uid = #{uid} AND role_id = #{roleId}")
     int deleteUserRole(@Param("uid") String uid, @Param("roleId") String roleId);
+
+    /** 查询用户被分配的角色（通过 user_role 关联） */
+    @Select("SELECT ri.* FROM role_info ri " +
+            "INNER JOIN user_role ur ON ur.role_id = ri.role_id " +
+            "WHERE ur.uid = #{uid}")
+    List<RoleInfo> findRolesByUserUid(@Param("uid") String uid);
 }

@@ -11,6 +11,7 @@ import ny.shop.youxuan.userservice.entity.RoleRightInfo;
 import ny.shop.youxuan.userservice.mapper.RoleInfoMapper;
 import ny.shop.youxuan.userservice.mapper.RoleRightInfoMapper;
 import ny.shop.youxuan.userservice.service.PermissionService;
+import ny.shop.youxuan.userservice.service.RoleInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,9 @@ import java.util.UUID;
  *
  * 提供角色的增删改查及权限分配功能。
  */
+
 @Service
-public class RoleInfoServiceImpl {
+public class RoleInfoServiceImpl implements RoleInfoService {
 
     private static final Logger log = LoggerFactory.getLogger(RoleInfoServiceImpl.class);
 
@@ -121,19 +123,22 @@ public class RoleInfoServiceImpl {
         return ApiResult.success(info);
     }
 
-    /** 查询用户的角色列表 */
+    /** 查询用户被分配的角色列表（通过 user_role 关联） */
     public ApiResult<List<RoleInfo>> getByUid(String uid) {
-        List<RoleInfo> list = roleInfoMapper.selectList(
-                new LambdaQueryWrapper<RoleInfo>().eq(RoleInfo::getUid, uid));
+        List<RoleInfo> list = roleInfoMapper.findRolesByUserUid(uid);
         return ApiResult.success(list);
     }
 
-    /** 查询用户的角色列表（分页） */
+    /** 查询用户被分配的角色列表（分页，通过 user_role 关联） */
     public ApiResult<PageResult<RoleInfo>> getByUid(String uid, int pageIndex, int pageSize) {
-        Page<RoleInfo> page = roleInfoMapper.selectPage(
-                Page.of(pageIndex, pageSize),
-                new LambdaQueryWrapper<RoleInfo>().eq(RoleInfo::getUid, uid));
-        return ApiResult.success(new PageResult<>(page.getRecords(), page.getTotal(), pageIndex, pageSize));
+        // 先查总数
+        List<RoleInfo> all = roleInfoMapper.findRolesByUserUid(uid);
+        int total = all.size();
+        // 内存分页
+        int from = (pageIndex - 1) * pageSize;
+        int to = Math.min(from + pageSize, total);
+        List<RoleInfo> pageList = (from >= total) ? List.of() : all.subList(from, to);
+        return ApiResult.success(new PageResult<>(pageList, total, pageIndex, pageSize));
     }
 
     /** 按角色名称模糊查询 */

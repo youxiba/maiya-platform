@@ -5,7 +5,7 @@ import ny.shop.youxuan.common.result.ApiResult;
 import ny.shop.youxuan.common.result.PageResult;
 import ny.shop.youxuan.userservice.dto.RoleInfoDto;
 import ny.shop.youxuan.userservice.entity.RoleInfo;
-import ny.shop.youxuan.userservice.service.impl.RoleInfoServiceImpl;
+import ny.shop.youxuan.userservice.service.RoleInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class RoleInfoController {
 
     @Autowired
-    private RoleInfoServiceImpl roleInfoService;
+    private RoleInfoService roleInfoService;
 
     /** 添加角色 */
     @PostMapping("/add")
